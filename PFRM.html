@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Análisis de las Protestas</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      display: flex;
+      height: 100vh;
+      font-family: 'Open Sans', sans-serif;
+      background: #e5e5e5;
+      color: #333;
+    }
+
+    /* Sidebar */
+    .sidebar {
+      width: 260px;
+      background: #004d73;
+      color: white;
+      overflow-y: auto;
+      padding: 24px 16px;
+      box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+    }
+
+    .sidebar .item {
+      margin-bottom: 12px;
+    }
+
+    .sidebar .item > button {
+      width: 100%;
+      background: none;
+      border: none;
+      color: white;
+      text-align: left;
+      padding: 12px;
+      font-size: 0.95rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.2s;
+      position: relative;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .sidebar .item > button:hover {
+      background: rgba(255, 255, 255, 0.15);
+      border-radius: 4px;
+    }
+
+    .sidebar .item > button .icon {
+      font-size: 0.8rem;
+      margin-left: 8px;
+      transition: transform 0.3s;
+    }
+
+    .sidebar .submenu {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.3s ease;
+      margin-top: 4px;
+      margin-left: 8px;
+    }
+
+    .sidebar .submenu a {
+      display: block;
+      padding: 8px 16px;
+      color: #e0f0ff;
+      text-decoration: none;
+      font-size: 0.9rem;
+      border-radius: 4px;
+      transition: background 0.2s;
+    }
+
+    .sidebar .submenu a:hover {
+      background: rgba(255, 255, 255, 0.1);
+    }
+
+    /* Contenedor principal */
+    .content {
+      flex: 1;
+      padding: 24px;
+      overflow-y: auto;
+      position: relative;
+    }
+
+    .dashboard {
+      background: white;
+      border-radius: 6px;
+      padding: 24px;
+      box-shadow: 0 0 8px rgba(0, 0, 0, 0.06);
+      min-height: 600px;
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      opacity: 0;
+      transition: opacity 0.5s ease;
+      z-index: 0;
+      display: none;
+    }
+
+    .dashboard.active {
+      display: block;
+      opacity: 1;
+      z-index: 1;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Sidebar -->
+  <aside class="sidebar">
+    <div class="item">
+      <button data-target="sub1">Protestas <span class="icon">▸</span></button>
+      <div id="sub1" class="submenu">
+        <a href="#" onclick="loadTab('tab-protestas-absolutas')">Número absoluto de protestas</a>
+        <a href="#" onclick="loadTab('tab-protestas-100k')">Protestas por cada 100 mil habitantes</a>
+        <a href="#" onclick="loadTab('tab-protestas-variacion')">Variación porcentual anual</a>
+      </div>
+    </div>
+
+    <div class="item">
+      <button data-target="sub2">Factores Socioeconómicos <span class="icon">▸</span></button>
+      <div id="sub2" class="submenu">
+        <a href="#" onclick="loadTab('tab-gini')">Desigualdad (Gini)</a>
+        <a href="#" onclick="loadTab('tab-injusticia')">Percepción de injusticia</a>
+        <a href="#" onclick="loadTab('tab-polarizacion')">Polarización del ingreso</a>
+        <a href="#" onclick="loadTab('tab-desempleo')">Desempleo</a>
+        <a href="#" onclick="loadTab('tab-crecimiento')">Crecimiento económico</a>
+        <a href="#" onclick="loadTab('tab-pib')">PIB per cápita (PPA)</a>
+        <a href="#" onclick="loadTab('tab-deuda')">Deuda en hogares</a>
+        <a href="#" onclick="loadTab('tab-clase-media')">Clase media subjetiva</a>
+        <a href="#" onclick="loadTab('tab-educacion')">Educación terciaria</a>
+        <a href="#" onclick="loadTab('tab-feminicidios')">Feminicidios</a>
+        <a href="#" onclick="loadTab('tab-satisfaccion')">Satisfacción con la vida</a>
+        <a href="#" onclick="loadTab('tab-desconfianza')">Desconfianza en el gobierno</a>
+      </div>
+    </div>
+
+    <div class="item">
+      <button data-target="sub3">Factores tecnológicos <span class="icon">▸</span></button>
+      <div id="sub3" class="submenu">
+        <a href="#" onclick="loadTab('tab-internet-hogares')">Hogares con acceso a Internet</a>
+        <a href="#" onclick="loadTab('tab-smartphones')">Conexiones por Smartphone</a>
+        <a href="#" onclick="loadTab('tab-redes')">Usuarios de redes sociales</a>
+      </div>
+    </div>
+
+    <div class="item">
+      <button data-target="sub4">Factores políticos <span class="icon">▸</span></button>
+      <div id="sub4" class="submenu">
+        <a href="#" onclick="loadTab('tab-aprobacion')">Aprobación presidencial</a>
+        <a href="#" onclick="loadTab('tab-partidos')">Número efectivo de partidos</a>
+      </div>
+    </div>
+  </aside>
+
+  <script type='module' src='js/viz_v1.js'></script>
+ <div class="content">
+
+  <div id="tab-protestas-absolutas" class="dashboard active">
+    <div style="max-width: 100%; margin: 0 auto; padding: 10px; box-sizing: border-box;">
+      <div class="tableauPlaceholder" style="width: 100%; height: auto; text-align: center;">
+        <tableau-viz src="https://analiticos.imss.gob.mx/#/site/DIDT/views/PFRM/Protestas" width="100%" height="840" ></tableau-viz>
+      </div>
+    </div>
+  </div>
+
+  <div id="tab-protestas-100k" class="dashboard">
+    <div style="max-width: 100%; margin: 0 auto; padding: 10px; box-sizing: border-box;">
+      <div class="tableauPlaceholder" style="width: 100%; height: auto; text-align: center;">
+        <tableau-viz src="https://analiticos.imss.gob.mx/#/site/DIDT/views/PFRM/Protestas" width="100%" height="840" ></tableau-viz>
+      </div>
+    </div>
+  </div>
+
+  <div id="tab-protestas-variacion" class="dashboard">
+    <div style="max-width: 100%; margin: 0 auto; padding: 10px; box-sizing: border-box;">
+      <div class="tableauPlaceholder" style="width: 100%; height: auto; text-align: center;">
+        <tableau-viz src="https://analiticos.imss.gob.mx/#/site/DIDT/views/PFRM/Protestas" width="100%" height="840" ></tableau-viz>
+      </div>
+    </div>
+  </div>
+
+  <div id="tab-gini" class="dashboard">
+    <div style="max-width: 100%; margin: 0 auto; padding: 10px; box-sizing: border-box;">
+      <div class="tableauPlaceholder" style="width: 100%; height: auto; text-align: center;">
+        <tableau-viz src="https://analiticos.imss.gob.mx/#/site/DIDT/views/PFRM/FactoresSocieconmicos" width="100%" height="840" ></tableau-viz>
+      </div>
+    </div>
+  </div>
+
+  <div id="tab-injusticia" class="dashboard">
+    <div style="max-width: 100%; margin: 0 auto; padding: 10px; box-sizing: border-box;">
+      <div class="tableauPlaceholder" style="width: 100%; height: auto; text-align: center;">
+        <tableau-viz src="https://analiticos.imss.gob.mx/#/site/DIDT/views/PFRM/FactoresSocieconmicos" width="100%" height="840" ></tableau-viz>
+      </div>
+    </div>
+  </div>
+
+  <div id="tab-polarizacion" class="dashboard">
+    <div style="max-width: 100%; margin: 0 auto; padding: 10px; box-sizing: border-box;">
+      <div class="tableauPlaceholder" style="width: 100%; height: auto; text-align: center;">
+        <tableau-viz src="https://analiticos.imss.gob.mx/#/site/DIDT/views/PFRM/FactoresSocieconmicos" width="100%" height="840" ></tableau-viz>
+      </div>
+    </div>
+  </div>
+
+  <div id="tab-desempleo" class="dashboard">
+    <div style="max-width: 100%; margin: 0 auto; padding: 10px; box-sizing: border-box;">
+      <div class="tableauPlaceholder" style="width: 100%; height: auto; text-align: center;">
+        <tableau-viz src="https://analiticos.imss.gob.mx/#/site/DIDT/views/PFRM/FactoresSocieconmicos" width="100%" height="840" ></tableau-viz>
+      </div>
+    </div>
+  </div>
+
+  <div id="tab-crecimiento" class="dashboard">
+    <div style="max-width: 100%; margin: 0 auto; padding: 10px; box-sizing: border-box;">
+      <div class="tableauPlaceholder" style="width: 100%; height: auto; text-align: center;">
+        <tableau-viz src="https://analiticos.imss.gob.mx/#/site/DIDT/views/PFRM/FactoresSocieconmicos" width="100%" height="840" ></tableau-viz>
+      </div>
+    </div>
+  </div>
+
+  <div id="tab-pib" class="dashboard">
+    <div style="max-width: 100%; margin: 0 auto; padding: 10px; box-sizing: border-box;">
+      <div class="tableauPlaceholder" style="width: 100%; height: auto; text-align: center;">
+        <tableau-viz src="https://analiticos.imss.gob.mx/#/site/DIDT/views/PFRM/FactoresSocieconmicos" width="100%" height="840" ></tableau-viz>
+      </div>
+    </div>
+  </div>
+
+  <div id="tab-deuda" class="dashboard">
+    <div style="max-width: 100%; margin: 0 auto; padding: 10px; box-sizing: border-box;">
+      <div class="tableauPlaceholder" style="width: 100%; height: auto; text-align: center;">
+        <tableau-viz src="https://analiticos.imss.gob.mx/#/site/DIDT/views/PFRM/FactoresSocieconmicos" width="100%" height="840" ></tableau-viz>
+      </div>
+    </div>
+  </div>
+
+  <div id="tab-clase-media" class="dashboard">
+    <div style="max-width: 100%; margin: 0 auto; padding: 10px; box-sizing: border-box;">
+      <div class="tableauPlaceholder" style="width: 100%; height: auto; text-align: center;">
+        <tableau-viz src="https://analiticos.imss.gob.mx/#/site/DIDT/views/PFRM/FactoresSocieconmicos" width="100%" height="840" ></tableau-viz>
+      </div>
+    </div>
+  </div>
+
+  <div id="tab-educacion" class="dashboard">
+    <div style="max-width: 100%; margin: 0 auto; padding: 10px; box-sizing: border-box;">
+      <div class="tableauPlaceholder" style="width: 100%; height: auto; text-align: center;">
+        <tableau-viz src="https://analiticos.imss.gob.mx/#/site/DIDT/views/PFRM/FactoresSocieconmicos" width="100%" height="840" ></tableau-viz>
+      </div>
+    </div>
+  </div>
+
+  <div id="tab-feminicidios" class="dashboard">
+    <div style="max-width: 100%; margin: 0 auto; padding: 10px; box-sizing: border-box;">
+      <div class="tableauPlaceholder" style="width: 100%; height: auto; text-align: center;">
+        <tableau-viz src="https://analiticos.imss.gob.mx/#/site/DIDT/views/PFRM/FactoresSocieconmicos" width="100%" height="840" ></tableau-viz>
+      </div>
+    </div>
+  </div>
+
+  <div id="tab-satisfaccion" class="dashboard">
+    <div style="max-width: 100%; margin: 0 auto; padding: 10px; box-sizing: border-box;">
+      <div class="tableauPlaceholder" style="width: 100%; height: auto; text-align: center;">
+        <tableau-viz src="https://analiticos.imss.gob.mx/#/site/DIDT/views/PFRM/FactoresSocieconmicos" width="100%" height="840" ></tableau-viz>
+      </div>
+    </div>
+  </div>
+
+  <div id="tab-desconfianza" class="dashboard">
+    <div style="max-width: 100%; margin: 0 auto; padding: 10px; box-sizing: border-box;">
+      <div class="tableauPlaceholder" style="width: 100%; height: auto; text-align: center;">
+        <tableau-viz src="https://analiticos.imss.gob.mx/#/site/DIDT/views/PFRM/FactoresSocieconmicos" width="100%" height="840" ></tableau-viz>
+      </div>
+    </div>
+  </div>
+
+  <div id="tab-internet-hogares" class="dashboard">
+    <div style="max-width: 100%; margin: 0 auto; padding: 10px; box-sizing: border-box;">
+      <div class="tableauPlaceholder" style="width: 100%; height: auto; text-align: center;">
+        <tableau-viz src="https://analiticos.imss.gob.mx/#/site/DIDT/views/PFRM/FactoresTecnolgicos" width="100%" height="840" ></tableau-viz>
+      </div>
+    </div>
+  </div>
+
+  <div id="tab-smartphones" class="dashboard">
+    <div style="max-width: 100%; margin: 0 auto; padding: 10px; box-sizing: border-box;">
+      <div class="tableauPlaceholder" style="width: 100%; height: auto; text-align: center;">
+        <tableau-viz src="https://analiticos.imss.gob.mx/#/site/DIDT/views/PFRM/FactoresTecnolgicos" width="100%" height="840" ></tableau-viz>
+      </div>
+    </div>
+  </div>
+
+  <div id="tab-redes" class="dashboard">
+    <div style="max-width: 100%; margin: 0 auto; padding: 10px; box-sizing: border-box;">
+      <div class="tableauPlaceholder" style="width: 100%; height: auto; text-align: center;">
+        <tableau-viz src="https://analiticos.imss.gob.mx/#/site/DIDT/views/PFRM/FactoresTecnolgicos" width="100%" height="840" ></tableau-viz>
+      </div>
+    </div>
+  </div>
+
+  <div id="tab-aprobacion" class="dashboard">
+    <div style="max-width: 100%; margin: 0 auto; padding: 10px; box-sizing: border-box;">
+      <div class="tableauPlaceholder" style="width: 100%; height: auto; text-align: center;">
+        <tableau-viz src="https://analiticos.imss.gob.mx/#/site/DIDT/views/PFRM/FactoresPolticos" width="100%" height="840" ></tableau-viz>
+      </div>
+    </div>
+  </div>
+
+  <div id="tab-partidos" class="dashboard">
+    <div style="max-width: 100%; margin: 0 auto; padding: 10px; box-sizing: border-box;">
+      <div class="tableauPlaceholder" style="width: 100%; height: auto; text-align: center;">
+        <tableau-viz src="https://analiticos.imss.gob.mx/#/site/DIDT/views/PFRM/FactoresPolticos" width="100%" height="840" ></tableau-viz>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+
+  <script>
+
+    document.querySelectorAll('.sidebar .item > button').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const sub = document.getElementById(btn.dataset.target);
+        const expanded = sub.style.maxHeight && sub.style.maxHeight !== '0px';
+        document.querySelectorAll('.submenu').forEach(s => s.style.maxHeight = '0');
+        document.querySelectorAll('.sidebar button .icon').forEach(icon => {
+          icon.textContent = '▸';
+        });
+        if (!expanded) {
+          sub.style.maxHeight = sub.scrollHeight + 'px';
+          const icon = btn.querySelector('.icon');
+          if (icon) icon.textContent = '▾';
+        }
+      });
+    });
+
+  
+    function loadTab(id) {
+      document.querySelectorAll('.dashboard').forEach(d => d.classList.remove('active'));
+      const el = document.getElementById(id);
+      if (el) el.classList.add('active');
+    }
+  </script>
+   
+
+
+</body>
+</html>
