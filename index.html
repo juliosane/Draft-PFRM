@@ -112,9 +112,60 @@
       opacity: 1;
       z-index: 1;
     }
+
+    /* Botón de menú hamburguesa */
+.menu-toggle {
+  position: fixed;
+  top: 12px;
+  left: 12px;
+  background: #004d73;
+  color: white;
+  border: none;
+  padding: 10px 14px;
+  border-radius: 4px;
+  cursor: pointer;
+  z-index: 1000;
+  display: none;
+}
+
+/* Mostrar el botón en pantallas pequeñas */
+@media (max-width: 768px) {
+  .menu-toggle {
+    display: block;
+  }
+
+  body {
+    flex-direction: column;
+  }
+
+  .sidebar {
+    position: fixed;
+    top: 0;
+    left: -260px;
+    height: 100%;
+    z-index: 999;
+    transition: left 0.3s ease;
+  }
+
+  .sidebar.open {
+    left: 0;
+  }
+
+  .content {
+    padding: 70px 16px 16px 16px;
+  }
+
+  .dashboard {
+    min-height: auto;
+  }
+}
+
   </style>
 </head>
 <body>
+
+  <button class="menu-toggle" onclick="toggleMenu()">☰ Menú</button>
+
 
   <!-- Sidebar -->
   <aside class="sidebar">
@@ -140,6 +191,7 @@
         <a href="#" onclick="loadTab('tab-clase-media')">Clase media subjetiva</a>
         <a href="#" onclick="loadTab('tab-educacion')">Educación terciaria</a>
         <a href="#" onclick="loadTab('tab-feminicidios')">Feminicidios</a>
+        <a href="#" onclick="loadTab('tab-feminicidios100m')">Tasa feminicidios 100m</a>
         <a href="#" onclick="loadTab('tab-satisfaccion')">Satisfacción con la vida</a>
         <a href="#" onclick="loadTab('tab-desconfianza')">Desconfianza en el gobierno</a>
       </div>
@@ -148,9 +200,9 @@
     <div class="item">
       <button data-target="sub3">Factores tecnológicos <span class="icon">▸</span></button>
       <div id="sub3" class="submenu">
-        <a href="#" onclick="loadTab('tab-internet-hogares')">Hogares con acceso a Internet</a>
-        <a href="#" onclick="loadTab('tab-smartphones')">Conexiones por Smartphone</a>
-        <a href="#" onclick="loadTab('tab-redes')">Usuarios de redes sociales</a>
+        <a href="#" onclick="loadTab('tab-internet-hogares')">Acceso a Internet Hogares</a>
+        <a href="#" onclick="loadTab('tab-smartphones')">Adopción Smartphones</a>
+        <a href="#" onclick="loadTab('tab-redes')">Uso de Redes Sociales</a>
       </div>
     </div>
 
@@ -158,6 +210,7 @@
       <button data-target="sub4">Factores políticos <span class="icon">▸</span></button>
       <div id="sub4" class="submenu">
         <a href="#" onclick="loadTab('tab-aprobacion')">Aprobación presidencial</a>
+        <a href="#" onclick="loadTab('tab-desaprobacion')">Desaprobación presidencial</a>
         <a href="#" onclick="loadTab('tab-partidos')">Número efectivo de partidos</a>
       </div>
     </div>
@@ -169,159 +222,174 @@
   <div id="tab-protestas-absolutas" class="dashboard active">
     <div style="max-width: 100%; margin: 0 auto; padding: 10px; box-sizing: border-box;">
       <div class="tableauPlaceholder" style="width: 100%; height: auto; text-align: center;">
-        <tableau-viz src="https://analiticos.imss.gob.mx/#/site/DIDT/views/PFRM/Protestas" width="100%" height="840" ></tableau-viz>
+        <tableau-viz src="https://analiticos.imss.gob.mx/#/site/DIDT/views/PFRM/GrficaProtestas" width="100%" height="840" ></tableau-viz>
       </div>
     </div>
   </div>
 
-  <div id="tab-protestas-100k" class="dashboard">
+  <div id="tab-protestas-100k" class="dashboard active">
     <div style="max-width: 100%; margin: 0 auto; padding: 10px; box-sizing: border-box;">
       <div class="tableauPlaceholder" style="width: 100%; height: auto; text-align: center;">
-        <tableau-viz src="https://analiticos.imss.gob.mx/#/site/DIDT/views/PFRM/Protestas" width="100%" height="840" ></tableau-viz>
+        <tableau-viz src="https://analiticos.imss.gob.mx/#/site/DIDT/views/PFRM/GrficaProtestas100k" width="100%" height="840" ></tableau-viz>
       </div>
     </div>
   </div>
 
-  <div id="tab-protestas-variacion" class="dashboard">
+  <div id="tab-protestas-variacion" class="dashboard  active">
     <div style="max-width: 100%; margin: 0 auto; padding: 10px; box-sizing: border-box;">
       <div class="tableauPlaceholder" style="width: 100%; height: auto; text-align: center;">
-        <tableau-viz src="https://analiticos.imss.gob.mx/#/site/DIDT/views/PFRM/Protestas" width="100%" height="840" ></tableau-viz>
+        <tableau-viz src="https://analiticos.imss.gob.mx/#/site/DIDT/views/PFRM/GrficaVariacinPorcentualProtestas" width="100%" height="840" ></tableau-viz>
       </div>
     </div>
   </div>
 
-  <div id="tab-gini" class="dashboard">
+  <div id="tab-gini" class="dashboard  active">
     <div style="max-width: 100%; margin: 0 auto; padding: 10px; box-sizing: border-box;">
       <div class="tableauPlaceholder" style="width: 100%; height: auto; text-align: center;">
-        <tableau-viz src="https://analiticos.imss.gob.mx/#/site/DIDT/views/PFRM/FactoresSocieconmicos" width="100%" height="840" ></tableau-viz>
+        <tableau-viz src="https://analiticos.imss.gob.mx/#/site/DIDT/views/PFRM/GrficaDesigualdad" width="100%" height="840" ></tableau-viz>
       </div>
     </div>
   </div>
 
-  <div id="tab-injusticia" class="dashboard">
+  <div id="tab-injusticia" class="dashboard  active">
     <div style="max-width: 100%; margin: 0 auto; padding: 10px; box-sizing: border-box;">
       <div class="tableauPlaceholder" style="width: 100%; height: auto; text-align: center;">
-        <tableau-viz src="https://analiticos.imss.gob.mx/#/site/DIDT/views/PFRM/FactoresSocieconmicos" width="100%" height="840" ></tableau-viz>
+        <tableau-viz src="https://analiticos.imss.gob.mx/#/site/DIDT/views/PFRM/GrficaPercepcindeInjusticia" width="100%" height="840" ></tableau-viz>
       </div>
     </div>
   </div>
 
-  <div id="tab-polarizacion" class="dashboard">
+  <div id="tab-polarizacion" class="dashboard active">
     <div style="max-width: 100%; margin: 0 auto; padding: 10px; box-sizing: border-box;">
       <div class="tableauPlaceholder" style="width: 100%; height: auto; text-align: center;">
-        <tableau-viz src="https://analiticos.imss.gob.mx/#/site/DIDT/views/PFRM/FactoresSocieconmicos" width="100%" height="840" ></tableau-viz>
+        <tableau-viz src="https://analiticos.imss.gob.mx/#/site/DIDT/views/PFRM/GrficaPolarizacindelIngreso" width="100%" height="840" ></tableau-viz>
       </div>
     </div>
   </div>
 
-  <div id="tab-desempleo" class="dashboard">
+  <div id="tab-desempleo" class="dashboard active">
     <div style="max-width: 100%; margin: 0 auto; padding: 10px; box-sizing: border-box;">
       <div class="tableauPlaceholder" style="width: 100%; height: auto; text-align: center;">
-        <tableau-viz src="https://analiticos.imss.gob.mx/#/site/DIDT/views/PFRM/FactoresSocieconmicos" width="100%" height="840" ></tableau-viz>
+        <tableau-viz src="https://analiticos.imss.gob.mx/#/site/DIDT/views/PFRM/GrficaDesempleo" width="100%" height="840" ></tableau-viz>
       </div>
     </div>
   </div>
 
-  <div id="tab-crecimiento" class="dashboard">
+  <div id="tab-crecimiento" class="dashboard active">
     <div style="max-width: 100%; margin: 0 auto; padding: 10px; box-sizing: border-box;">
       <div class="tableauPlaceholder" style="width: 100%; height: auto; text-align: center;">
-        <tableau-viz src="https://analiticos.imss.gob.mx/#/site/DIDT/views/PFRM/FactoresSocieconmicos" width="100%" height="840" ></tableau-viz>
+        <tableau-viz src="https://analiticos.imss.gob.mx/#/site/DIDT/views/PFRM/GrficaCrecimientoEconmico" width="100%" height="840" ></tableau-viz>
       </div>
     </div>
   </div>
 
-  <div id="tab-pib" class="dashboard">
+  <div id="tab-pib" class="dashboard active">
     <div style="max-width: 100%; margin: 0 auto; padding: 10px; box-sizing: border-box;">
       <div class="tableauPlaceholder" style="width: 100%; height: auto; text-align: center;">
-        <tableau-viz src="https://analiticos.imss.gob.mx/#/site/DIDT/views/PFRM/FactoresSocieconmicos" width="100%" height="840" ></tableau-viz>
+        <tableau-viz src="https://analiticos.imss.gob.mx/#/site/DIDT/views/PFRM/GrficaPIBperCpita" width="100%" height="840" ></tableau-viz>
       </div>
     </div>
   </div>
 
-  <div id="tab-deuda" class="dashboard">
+  <div id="tab-deuda" class="dashboard active">
     <div style="max-width: 100%; margin: 0 auto; padding: 10px; box-sizing: border-box;">
       <div class="tableauPlaceholder" style="width: 100%; height: auto; text-align: center;">
-        <tableau-viz src="https://analiticos.imss.gob.mx/#/site/DIDT/views/PFRM/FactoresSocieconmicos" width="100%" height="840" ></tableau-viz>
+        <tableau-viz src="https://analiticos.imss.gob.mx/#/site/DIDT/views/PFRM/GrficaDeudaenHogares" width="100%" height="840" ></tableau-viz>
       </div>
     </div>
   </div>
 
-  <div id="tab-clase-media" class="dashboard">
+  <div id="tab-clase-media" class="dashboard active">
     <div style="max-width: 100%; margin: 0 auto; padding: 10px; box-sizing: border-box;">
       <div class="tableauPlaceholder" style="width: 100%; height: auto; text-align: center;">
-        <tableau-viz src="https://analiticos.imss.gob.mx/#/site/DIDT/views/PFRM/FactoresSocieconmicos" width="100%" height="840" ></tableau-viz>
+        <tableau-viz src="https://analiticos.imss.gob.mx/#/site/DIDT/views/PFRM/GrficaClaseMediaSubjetiva" width="100%" height="840" ></tableau-viz>
       </div>
     </div>
   </div>
 
-  <div id="tab-educacion" class="dashboard">
+  <div id="tab-educacion" class="dashboard active">
     <div style="max-width: 100%; margin: 0 auto; padding: 10px; box-sizing: border-box;">
       <div class="tableauPlaceholder" style="width: 100%; height: auto; text-align: center;">
-        <tableau-viz src="https://analiticos.imss.gob.mx/#/site/DIDT/views/PFRM/FactoresSocieconmicos" width="100%" height="840" ></tableau-viz>
+        <tableau-viz src="https://analiticos.imss.gob.mx/#/site/DIDT/views/PFRM/GrficaEducacinTerciaria" width="100%" height="840" ></tableau-viz>
       </div>
     </div>
   </div>
 
-  <div id="tab-feminicidios" class="dashboard">
+  <div id="tab-feminicidios" class="dashboard active">
     <div style="max-width: 100%; margin: 0 auto; padding: 10px; box-sizing: border-box;">
       <div class="tableauPlaceholder" style="width: 100%; height: auto; text-align: center;">
-        <tableau-viz src="https://analiticos.imss.gob.mx/#/site/DIDT/views/PFRM/FactoresSocieconmicos" width="100%" height="840" ></tableau-viz>
+        <tableau-viz src="https://analiticos.imss.gob.mx/#/site/DIDT/views/PFRM/GrficaFeminicidios" width="100%" height="840" ></tableau-viz>
       </div>
     </div>
   </div>
 
-  <div id="tab-satisfaccion" class="dashboard">
+<div id="tab-feminicidios100m" class="dashboard active">
     <div style="max-width: 100%; margin: 0 auto; padding: 10px; box-sizing: border-box;">
       <div class="tableauPlaceholder" style="width: 100%; height: auto; text-align: center;">
-        <tableau-viz src="https://analiticos.imss.gob.mx/#/site/DIDT/views/PFRM/FactoresSocieconmicos" width="100%" height="840" ></tableau-viz>
+        <tableau-viz src="https://analiticos.imss.gob.mx/#/site/DIDT/views/PFRM/GrficaTasaFeminicidios100m" width="100%" height="840" ></tableau-viz>
       </div>
     </div>
   </div>
 
-  <div id="tab-desconfianza" class="dashboard">
+  <div id="tab-satisfaccion" class="dashboard active">
     <div style="max-width: 100%; margin: 0 auto; padding: 10px; box-sizing: border-box;">
       <div class="tableauPlaceholder" style="width: 100%; height: auto; text-align: center;">
-        <tableau-viz src="https://analiticos.imss.gob.mx/#/site/DIDT/views/PFRM/FactoresSocieconmicos" width="100%" height="840" ></tableau-viz>
+        <tableau-viz src="https://analiticos.imss.gob.mx/#/site/DIDT/views/PFRM/GrficaSatisfaccinconlaVida" width="100%" height="840" ></tableau-viz>
       </div>
     </div>
   </div>
 
-  <div id="tab-internet-hogares" class="dashboard">
+  <div id="tab-desconfianza" class="dashboard active">
     <div style="max-width: 100%; margin: 0 auto; padding: 10px; box-sizing: border-box;">
       <div class="tableauPlaceholder" style="width: 100%; height: auto; text-align: center;">
-        <tableau-viz src="https://analiticos.imss.gob.mx/#/site/DIDT/views/PFRM/FactoresTecnolgicos" width="100%" height="840" ></tableau-viz>
+        <tableau-viz src="https://analiticos.imss.gob.mx/#/site/DIDT/views/PFRM/GrficaDesconfianzaenelGobierno" width="100%" height="840" ></tableau-viz>
       </div>
     </div>
   </div>
 
-  <div id="tab-smartphones" class="dashboard">
+  <div id="tab-internet-hogares" class="dashboard active">
     <div style="max-width: 100%; margin: 0 auto; padding: 10px; box-sizing: border-box;">
       <div class="tableauPlaceholder" style="width: 100%; height: auto; text-align: center;">
-        <tableau-viz src="https://analiticos.imss.gob.mx/#/site/DIDT/views/PFRM/FactoresTecnolgicos" width="100%" height="840" ></tableau-viz>
+        <tableau-viz src="https://analiticos.imss.gob.mx/#/site/DIDT/views/PFRM/GrficaAccesoaInternetHogares" width="100%" height="840" ></tableau-viz>
       </div>
     </div>
   </div>
 
-  <div id="tab-redes" class="dashboard">
+  <div id="tab-smartphones" class="dashboard active">
     <div style="max-width: 100%; margin: 0 auto; padding: 10px; box-sizing: border-box;">
       <div class="tableauPlaceholder" style="width: 100%; height: auto; text-align: center;">
-        <tableau-viz src="https://analiticos.imss.gob.mx/#/site/DIDT/views/PFRM/FactoresTecnolgicos" width="100%" height="840" ></tableau-viz>
+        <tableau-viz src="https://analiticos.imss.gob.mx/#/site/DIDT/views/PFRM/GrficaAdopcindeSmartphones" width="100%" height="840" ></tableau-viz>
       </div>
     </div>
   </div>
 
-  <div id="tab-aprobacion" class="dashboard">
+  <div id="tab-redes" class="dashboard active">
     <div style="max-width: 100%; margin: 0 auto; padding: 10px; box-sizing: border-box;">
       <div class="tableauPlaceholder" style="width: 100%; height: auto; text-align: center;">
-        <tableau-viz src="https://analiticos.imss.gob.mx/#/site/DIDT/views/PFRM/FactoresPolticos" width="100%" height="840" ></tableau-viz>
+        <tableau-viz src="https://analiticos.imss.gob.mx/#/site/DIDT/views/PFRM/GrficaUsoRedesSociales" width="100%" height="840" ></tableau-viz>
       </div>
     </div>
   </div>
 
-  <div id="tab-partidos" class="dashboard">
+  <div id="tab-aprobacion" class="dashboard active">
     <div style="max-width: 100%; margin: 0 auto; padding: 10px; box-sizing: border-box;">
       <div class="tableauPlaceholder" style="width: 100%; height: auto; text-align: center;">
-        <tableau-viz src="https://analiticos.imss.gob.mx/#/site/DIDT/views/PFRM/FactoresPolticos" width="100%" height="840" ></tableau-viz>
+        <tableau-viz src="https://analiticos.imss.gob.mx/#/site/DIDT/views/PFRM/GrficaAprobacinPresidencial" width="100%" height="840" ></tableau-viz>
+      </div>
+    </div>
+
+  </div><div id="tab-desaprobacion" class="dashboard active">
+    <div style="max-width: 100%; margin: 0 auto; padding: 10px; box-sizing: border-box;">
+      <div class="tableauPlaceholder" style="width: 100%; height: auto; text-align: center;">
+        <tableau-viz src="https://analiticos.imss.gob.mx/#/site/DIDT/views/PFRM/GrficaDesaprobacinPresidencial" width="100%" height="840" ></tableau-viz>
+      </div>
+    </div>
+  </div>
+
+  <div id="tab-partidos" class="dashboard active">
+    <div style="max-width: 100%; margin: 0 auto; padding: 10px; box-sizing: border-box;">
+      <div class="tableauPlaceholder" style="width: 100%; height: auto; text-align: center;">
+        <tableau-viz src="https://analiticos.imss.gob.mx/#/site/DIDT/views/PFRM/GrficaNmeroEfectivodePartidosPolticos" width="100%" height="840" ></tableau-viz>
       </div>
     </div>
   </div>
@@ -353,6 +421,12 @@
       const el = document.getElementById(id);
       if (el) el.classList.add('active');
     }
+
+    function toggleMenu() {
+  const sidebar = document.querySelector('.sidebar');
+  sidebar.classList.toggle('open');
+}
+
   </script>
    
 
